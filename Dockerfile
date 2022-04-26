@@ -17,4 +17,10 @@ WORKDIR /app
 
 RUN mix deps.get
 
+RUN mix compile.phoenix
+
 RUN cd assets && yarn install
+
+EXPOSE 4000
+
+CMD [ "mix", "phx.server" ]

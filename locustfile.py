@@ -3,6 +3,8 @@ from __future__ import absolute_import
 from __future__ import unicode_literals
 from __future__ import print_function
 
+import os
+
 import json
 import uuid
 import time
@@ -13,6 +15,8 @@ import six
 
 from locust import HttpUser, TaskSet, task
 from locust import events
+
+ENDPOINT = os.environ['LOCUST_ENDPOINT']
 
 
 class ChatTaskSet(TaskSet):
@@ -26,7 +30,7 @@ class ChatTaskSet(TaskSet):
 
     def connect(self):
         ws = create_connection(
-            'ws://localhost:4000/socket/websocket?token=undefined&vsn=2.0.0')
+            f"ws://{ENDPOINT}/socket/websocket?token=undefined&vsn=2.0.0")
         self.ws = ws
 
     def join(self):
