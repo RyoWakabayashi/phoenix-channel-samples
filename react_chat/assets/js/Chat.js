@@ -62,6 +62,9 @@ class Chat extends React.Component {
         this.channel.on("new_msg", payload => {
           let messages = this.state.messages;
           messages.push(payload)
+          if (messages.length > 10) {
+            messages.shift()
+          }
           this.setState({ messages: messages })
         })
 
@@ -101,13 +104,7 @@ class Chat extends React.Component {
         )
     });
 
-    let presences = [];
-    Presence.list(this.state.presences, (name, metas) => {
-        presences.push(name);
-    });
-    let presences_list = presences.map( (user_name, index) =>
-      <li key={index} style={style2}>{user_name}</li>
-    );
+    let presences = Presence.list(this.state.presences);
 
     let form_jsx;
     if(this.state.isJoined===false) {
@@ -122,10 +119,7 @@ class Chat extends React.Component {
        form_jsx = (
          <div>
            <Paper  style={style1}>
-             <label>参加者 : {this.state.inputUser}</label>
-             <ul>
-               {presences_list}
-             </ul>
+             <label>参加者数 : {presences.length}</label>
              <div align="right">
                <form onSubmit={this.handleLeave.bind(this)} >
                  <RaisedButton type="submit" primary={true} label="Leave" />

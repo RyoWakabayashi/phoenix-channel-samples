@@ -202,4 +202,17 @@ locust -f locustfile.py
 copilot app delete
 ```
 
+#### リソースの調節
+
+copilot/sample-service/manifest.yml の `cpu` と `memory` を変更することで、
+コンテナに割り当てるリソースを調整することができる
+
+[ただし、設定できる値の組み合わせには制限がある][resource]
+
+```yml
+cpu: 512       # Number of CPU units for the task.
+memory: 1024    # Amount of memory in MiB used by the task.
+```
+
 [copilot]: https://aws.github.io/copilot-cli/ja/
+[resource]: [https://docs.aws.amazon.com/ja_jp/AmazonECS/latest/developerguide/task-cpu-memory-error.html]
