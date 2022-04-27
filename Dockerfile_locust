@@ -1,0 +1,15 @@
+FROM python:3.10.4
+
+RUN mkdir /app
+
+COPY ./locustfile.py /app/
+
+COPY ./requirements.txt /app/
+
+WORKDIR /app
+
+RUN pip install -r requirements.txt
+
+EXPOSE 8089
+
+CMD [ "locust", "-f", "locustfile.py" ]
