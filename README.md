@@ -33,27 +33,24 @@ locust -f locustfile.py
     "Version": "2012-10-17",
     "Statement": [
         {
-            "Sid": "IAMAll",
+            "Sid": "Fulls",
             "Effect": "Allow",
             "Action": [
-                "iam:*"
-            ],
-            "Resource": "*"
-        },
-        {
-            "Sid": "S3All",
-            "Effect": "Allow",
-            "Action": [
-                "s3:*"
-            ],
-            "Resource": "*"
-        },
-        {
-            "Sid": "ECRAll",
-            "Effect": "Allow",
-            "Action": [
+                "cloudformation:*"
+                "cloudtrail:LookupEvents",
+                "codebuild:ListProjects",
+                "codestar-connections:CreateConnection",
+                "codestar-connections:ListConnections",
+                "codestar-connections:PassConnection",
+                "codestar-connections:TagResource",
+                "codestar-connections:UntagResource"
+                "iam:*",
+                "ec2:*",
                 "ecr:*",
-                "cloudtrail:LookupEvents"
+                "ecs:CreateCluster",
+                "s3:*",
+                "secretsmanager:DescribeSecret",
+                "servicediscovery:*"
             ],
             "Resource": "*"
         },
@@ -73,23 +70,30 @@ locust -f locustfile.py
             }
         },
         {
-            "Sid": "CloudFormation",
+            "Sid": "CodeStarConnections",
             "Effect": "Allow",
             "Action": [
-                "cloudformation:*"
+                "codestar-connections:DeleteConnection",
+                "codestar-connections:GetConnection"
             ],
             "Resource": [
-                "*"
+                "arn:aws:codestar-connections:*:<アカウントID>:connection/*"
             ]
         },
         {
-            "Sid": "EC2All",
+            "Sid": "CodeBuild",
             "Effect": "Allow",
-            "Action": "ec2:*",
-            "Resource": "*"
+            "Action": [
+                "codebuild:CreateProject",
+                "codebuild:DeleteProject",
+                "codebuild:UpdateProject"
+            ],
+            "Resource": [
+                "arn:aws:codebuild:*:<アカウントID>:project/*"
+            ]
         },
         {
-            "Sid": "ECSTarget",
+            "Sid": "ECS",
             "Effect": "Allow",
             "Action": [
                 "ecs:DeleteCluster",
@@ -98,52 +102,15 @@ locust -f locustfile.py
             "Resource": "arn:aws:ecs:*:<アカウントID>:cluster/*"
         },
         {
-            "Sid": "ECSCreate",
-            "Effect": "Allow",
-            "Action": "ecs:CreateCluster",
-            "Resource": "*"
-        },
-        {
-            "Sid": "CloudMap",
-            "Effect": "Allow",
-            "Action": [
-                "servicediscovery:TagResource",
-                "servicediscovery:ListServices",
-                "servicediscovery:ListOperations",
-                "servicediscovery:GetOperation",
-                "servicediscovery:DiscoverInstances",
-                "servicediscovery:ListNamespaces",
-                "servicediscovery:CreatePrivateDnsNamespace",
-                "servicediscovery:CreateHttpNamespace",
-                "servicediscovery:CreatePublicDnsNamespace",
-                "servicediscovery:UntagResource",
-                "servicediscovery:ListTagsForResource",
-                "servicediscovery:GetInstancesHealthStatus",
-                "servicediscovery:GetInstance",
-                "servicediscovery:UpdateInstanceCustomHealthStatus",
-                "servicediscovery:ListInstances"
-            ],
-            "Resource": "*"
-        },
-        {
-            "Sid": "CloudMapAll",
-            "Effect": "Allow",
-            "Action": "servicediscovery:*",
-            "Resource": [
-                "arn:aws:servicediscovery:*:<アカウントID>:service/*",
-                "arn:aws:servicediscovery:*:<アカウントID>:namespace/*"
-            ]
-        },
-        {
             "Sid": "SSM",
             "Effect": "Allow",
             "Action": [
-                "ssm:GetParametersByPath",
-                "ssm:GetParameters",
-                "ssm:GetParameter",
-                "ssm:PutParameter",
                 "ssm:DeleteParameter",
-                "ssm:DeleteParameters"
+                "ssm:DeleteParameters",
+                "ssm:GetParameter",
+                "ssm:GetParameters",
+                "ssm:GetParametersByPath",
+                "ssm:PutParameter"
             ],
             "Resource": "arn:aws:ssm:*:<アカウントID>:parameter/*"
         },
@@ -166,6 +133,17 @@ copilot app init
 ```
 
 いくつかの質問に答える
+
+App Runner は Web Sockets に対応していないため、
+Web Socket が必要な場合は Load Balancer を使用する必要がある
+
+AWS App Runner でサービスを構築する場合、
+App Runner 内のサービス名が
+`<Copilot のアプリケーション名>-<Copilot の環境名>-<Copilot のサービス名>`
+になる
+
+App Runner 内のサービス名は 40 文字が上限なので、
+Copilot 上のサービス名は `main-svc` などの短い名前にする
 
 環境は別途作成するため、ここでは作成しない
 
