@@ -18,6 +18,24 @@ export LOCUST_ENDPOINT="localhost:4000"
 locust -f locustfile.py
 ```
 
+### コンテナで負荷試験
+
+- Locust
+
+  ```bin
+  export LOCUST_ENDPOINT="<ホスト名:ポート番号>"
+  docker build -f Dockerfile_locust -t locust .
+  docker run -it --rm -p 8089:8089 -e LOCUST_ENDPOINT locust
+  ```
+
+- Gatling
+
+  ```bin
+  export WS_HOST="<ホスト名:ポート番号>"
+  docker build -f Dockerfile_gatling -t gatling .
+  docker run -it --rm -e WS_HOST gatling
+  ```
+
 ## AWS Copilot
 
 ### 必要なツール

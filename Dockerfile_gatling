@@ -1,0 +1,22 @@
+FROM openjdk:11
+
+ENV LANG C.UTF-8
+
+RUN apt-get update -y \
+  && apt-get upgrade -y \
+  && apt-get install -y wget unzip
+
+RUN mkdir /workdir && cd /workdir
+
+WORKDIR /workdir
+
+RUN wget -q https://repo1.maven.org/maven2/io/gatling/highcharts/gatling-charts-highcharts-bundle/3.7.6/gatling-charts-highcharts-bundle-3.7.6-bundle.zip \
+  && unzip gatling-charts-highcharts-bundle-3.7.6-bundle.zip
+
+ENV GATLING_HOME=/workdir/gatling-charts-highcharts-bundle-3.7.6
+
+ENV PATH=$PATH:$GATLING_HOME/bin
+
+COPY ./gatling_senario/simulations /${GATLING_HOME}/user-files/simulations
+
+CMD ["gatling.sh", "-s", "WebSocketSimulation"]
