@@ -17,7 +17,7 @@ WORKDIR /app
 
 RUN mix deps.get
 
-# RUN mix compile.phoenix
+RUN mix compile.phoenix
 
 RUN cd assets && yarn install
 

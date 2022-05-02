@@ -1,0 +1,66 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+
+Parameters:
+  WSHost:
+    Type: String
+  S3Bucket:
+    Type: String
+
+Globals:
+  Function:
+    Timeout: 90
+    MemorySize: 512
+
+Resources:
+  GatlingLambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: gatling-lambda-role
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: "Allow"
+            Action: "sts:AssumeRole"
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+                - apigateway.amazonaws.com
+      Policies:
+        - PolicyName: gatling-lambda-role-policy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource:
+                  - '*'
+              - Effect: Allow
+                Action:
+                  - s3:*
+                Resource:
+                  - '*'
+
+  GatlingFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      PackageType: Image
+      FunctionName: gatling-function
+      Architectures:
+        - x86_64
+      Role: !GetAtt GatlingLambdaRole.Arn
+      Environment:
+        Variables:
+          WS_HOST: !Ref WSHost
+          S3_BUCKET: !Ref S3Bucket
+    Metadata:
+      Dockerfile: Dockerfile
+      DockerContext: ./app
+
+Outputs:
+  GatlingFunction:
+    Description: "Gatling Lambda Function ARN"
+    Value: !GetAtt GatlingFunction.Arn
