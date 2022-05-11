@@ -211,4 +211,4 @@ memory: 1024    # Amount of memory in MiB used by the task.
 ```
 
 [copilot]: https://aws.github.io/copilot-cli/ja/
-[resource]: [https://docs.aws.amazon.com/ja_jp/AmazonECS/latest/developerguide/task-cpu-memory-error.html]
+[resource]: https://docs.aws.amazon.com/ja_jp/AmazonECS/latest/developerguide/task-cpu-memory-error.html
