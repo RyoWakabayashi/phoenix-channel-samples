@@ -147,7 +147,7 @@ locust -f locustfile.py
 アプリケーションの初期化
 
 ```bash
-copilot app init
+copilot init
 ```
 
 いくつかの質問に答える
@@ -161,7 +161,7 @@ App Runner 内のサービス名が
 になる
 
 App Runner 内のサービス名は 40 文字が上限なので、
-Copilot 上のサービス名は `main-svc` などの短い名前にする
+Copilot 上のサービス名は `lb-svc` などの短い名前にする
 
 環境は別途作成するため、ここでは作成しない
 
@@ -200,7 +200,7 @@ copilot app delete
 
 #### リソースの調節
 
-copilot/sample-service/manifest.yml の `cpu` と `memory` を変更することで、
+copilot/lb-svc/manifest.yml の `cpu` と `memory` を変更することで、
 コンテナに割り当てるリソースを調整することができる
 
 [ただし、設定できる値の組み合わせには制限がある][resource]
