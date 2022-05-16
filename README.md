@@ -171,6 +171,12 @@ Copilot 上のサービス名は `lb-svc` などの短い名前にする
 copilot env init --container-insights
 ```
 
+リリース用の環境変数を設定する
+
+```bash
+export SECRET_KEY_BASE=<任意の値>
+```
+
 以下のコマンドでデプロイする
 
 ```bash
