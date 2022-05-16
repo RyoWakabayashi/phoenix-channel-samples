@@ -10,6 +10,7 @@ import Config
 # Configures the endpoint
 config :react_chat, ReactChatWeb.Endpoint,
   url: [host: "localhost"],
+  check_origin: false,
   render_errors: [view: ReactChatWeb.ErrorView, accepts: ~w(html json), layout: false],
   pubsub_server: ReactChat.PubSub,
   live_view: [signing_salt: "FPqpSi1+"]

@@ -1,6 +1,7 @@
 version: '3.2'
 services:
   web:
+    container_name: chat
     build: .
     ports:
       - '4000:4000'
