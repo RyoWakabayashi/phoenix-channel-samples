@@ -48,3 +48,15 @@ config :logger, level: :info
 #       force_ssl: [hsts: true]
 #
 # Check `Plug.SSL` for all available options in `force_ssl`.
+
+config :libcluster,
+  topologies: [
+    dns_poll_example: [
+      strategy: Elixir.Cluster.Strategy.DNSPoll,
+      config: [
+        polling_interval: 5_000,
+        query: "lb-svc.test.react-chat.local",
+        node_basename: "react_chat"
+      ]
+    ]
+  ]

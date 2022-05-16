@@ -7,6 +7,8 @@ defmodule ReactChat.Application do
 
   @impl true
   def start(_type, _args) do
+    topologies = Application.get_env(:libcluster, :topologies) || []
+
     children = [
       # Start the Telemetry supervisor
       ReactChatWeb.Telemetry,
@@ -14,9 +16,10 @@ defmodule ReactChat.Application do
       {Phoenix.PubSub, name: ReactChat.PubSub},
       ReactChatWeb.Presence,
       # Start the Endpoint (http/https)
-      ReactChatWeb.Endpoint
+      ReactChatWeb.Endpoint,
       # Start a worker by calling: ReactChat.Worker.start_link(arg)
       # {ReactChat.Worker, arg}
+      {Cluster.Supervisor, [topologies, [name: ReactChat.ClusterSupervisor]]}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
