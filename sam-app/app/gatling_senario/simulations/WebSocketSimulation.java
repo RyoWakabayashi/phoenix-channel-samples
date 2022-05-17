@@ -4,6 +4,7 @@ import static io.gatling.javaapi.http.HttpDsl.*;
 import io.gatling.javaapi.core.*;
 import io.gatling.javaapi.http.*;
 
+import java.time.Duration;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
@@ -35,14 +36,14 @@ public class WebSocketSimulation extends Simulation {
       .exec(
           ws("WS EchoBack")
               .sendText("[\"3\", \"3\", \"room:lobby\", \"phx_join\", {\"user_name\": \"#{userId}\"}]"))
-      .repeat(10).on(
+      .repeat(120).on(
           exec(
               ws("WS EchoBack")
                   .sendText("[\"3\", \"4\", \"room:lobby\", \"new_msg\", {\"msg\": \"hello\"}]"))
-              .pause(1))
+              .pause(Duration.ofMillis(500)))
       .exec(ws("Close WS").close());
 
   {
-    setUp(scn.injectOpen(atOnceUsers(300)).protocols(httpProtocol));
+    setUp(scn.injectOpen(atOnceUsers(1000)).protocols(httpProtocol));
   }
 }

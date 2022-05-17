@@ -9,8 +9,8 @@ Parameters:
 
 Globals:
   Function:
-    Timeout: 90
-    MemorySize: 512
+    Timeout: 900
+    MemorySize: 4096
 
 Resources:
   GatlingLambdaRole:
