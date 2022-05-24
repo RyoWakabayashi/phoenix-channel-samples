@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<!DOCTYPE tsung SYSTEM "tsung-1.0.dtd">
+<tsung loglevel="notice" version="1.0">
+  <!-- ①クライアント/サーバー設定 -->
+  <clients>
+    <client host="localhost" use_controller_vm="true" />
+  </clients>
+  <servers>
+    <server host="react-publi-r67ggn3ojq2u-968900191.ap-northeast-1.elb.amazonaws.com" port="80" type="tcp"></server>
+  </servers>
+
+  <!-- ②負荷設定 -->
+  <load>
+    <arrivalphase phase="1" duration="5" unit="second">
+      <users arrivalrate="100" unit="second" maxnumber="500"></users>
+    </arrivalphase>
+  </load>
+
+  <!--  ③セッション（シナリオ）設定 -->
+  <sessions>
+    <session name="default-session" probability="100" type="ts_websocket">
+
+      <request>
+        <websocket frame="text" type="connect" path="/socket/websocket?vsn=2.0.0"></websocket>
+      </request>
+
+      <request subst="true">
+        <websocket frame="text" type="message">
+          ["3", "3", "room:lobby", "phx_join", {"user_name": "tsung_%%ts_user_server:get_unique_id%%"}]
+        </websocket>
+      </request>
+
+      <for var="heartbeat" from="1" to="60" incr="1">
+        <thinktime value="1"/>
+        <request>
+          <websocket frame="text" ack="no_ack" type="message">
+            ["3", "4", "room:lobby", "new_msg", {"msg": "hello"}]
+          </websocket>
+        </request>
+      </for>
+
+    </session>
+  </sessions>
+</tsung>

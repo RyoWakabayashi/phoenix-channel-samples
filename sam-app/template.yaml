@@ -10,7 +10,7 @@ Parameters:
 Globals:
   Function:
     Timeout: 900
-    MemorySize: 4096
+    MemorySize: 2048
 
 Resources:
   GatlingLambdaRole:
@@ -58,7 +58,24 @@ Resources:
           S3_BUCKET: !Ref S3Bucket
     Metadata:
       Dockerfile: Dockerfile
-      DockerContext: ./app
+      DockerContext: ./gatling
+
+  TsungFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      PackageType: Image
+      FunctionName: tsung-function
+      MemorySize: 4096
+      Architectures:
+        - x86_64
+      Role: !GetAtt GatlingLambdaRole.Arn
+      Environment:
+        Variables:
+          WS_HOST: !Ref WSHost
+          S3_BUCKET: !Ref S3Bucket
+    Metadata:
+      Dockerfile: Dockerfile
+      DockerContext: ./tsung
 
 Outputs:
   GatlingFunction:

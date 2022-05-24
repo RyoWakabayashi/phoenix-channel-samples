@@ -1,0 +1,15 @@
+FROM ubuntu:22.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update -y \
+  && apt-get upgrade -y \
+  && apt-get install -y tsung
+
+COPY ./tsung /.tsung
+
+WORKDIR /.tsung
+
+RUN chmod +x tsung_exec.sh
+
+CMD ["./tsung_exec.sh"]

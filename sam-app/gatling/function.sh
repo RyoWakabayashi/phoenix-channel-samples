@@ -10,6 +10,14 @@ REQUEST_ID=$(grep -Fi Lambda-Runtime-Aws-Request-Id "$HEADERS" | tr -d '[:space:
 
 echo $REQUEST_ID
 
+sudo ulimit -n 64000
+
+echo "ulimit values"
+
+ulimit -n
+ulimit -Sn
+ulimit -Hn
+
 cp -r ${GATLING_HOME} /tmp/gatling
 
 export GATLING_HOME=/tmp/gatling

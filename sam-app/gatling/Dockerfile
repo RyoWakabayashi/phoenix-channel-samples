@@ -25,7 +25,15 @@ ENV PATH=$PATH:$GATLING_HOME/bin
 
 RUN chmod +x ${GATLING_HOME}/bin/gatling.sh
 
-COPY ./gatling_senario/simulations /${GATLING_HOME}/user-files/simulations
+RUN echo "root soft nproc 64000" >> /etc/security/limits.conf \
+  && echo "root hard nproc 64000" >> /etc/security/limits.conf \
+  && echo "root soft nofile 64000" >> /etc/security/limits.conf \
+  && echo "root hard nofile 64000" >> /etc/security/limits.conf \
+  && echo "session required pam_limits.so" >> /etc/pam.d/common-session \
+  && echo "fs.file-max = 2097152" >> /etc/sysctl.conf \
+  && ulimit -n 64000
+
+COPY ./senario/simulations /${GATLING_HOME}/user-files/simulations
 
 COPY ./function.sh /workdir/
 
