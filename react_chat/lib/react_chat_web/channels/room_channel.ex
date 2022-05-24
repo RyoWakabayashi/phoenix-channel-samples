@@ -62,14 +62,9 @@ defmodule ReactChatWeb.RoomChannel do
   end
 
   defp put_message!(user_name, message_content) do
-    Logger.info("user_name = #{user_name}")
-    Logger.info("message_content = #{message_content}")
-
     now = DateTime.utc_now() |> DateTime.to_unix(:millisecond)
 
     id = "#{now}|#{user_name}"
-
-    Logger.info("id = #{id}")
 
     item = %{
       "channel_name" => "react-chat",
@@ -77,8 +72,6 @@ defmodule ReactChatWeb.RoomChannel do
       "user_name" => user_name,
       "msg" => message_content
     }
-
-    Logger.info("item = #{inspect(item)}")
 
     case get_table_name!()
          |> Dynamo.put_item(item)

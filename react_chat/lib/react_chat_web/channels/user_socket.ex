@@ -1,5 +1,6 @@
 defmodule ReactChatWeb.UserSocket do
   use Phoenix.Socket
+  require Logger
 
   # A Socket handler
   #
@@ -8,7 +9,7 @@ defmodule ReactChatWeb.UserSocket do
 
   ## Channels
 
-  channel "room:*", ReactChatWeb.RoomChannel
+  channel("room:*", ReactChatWeb.RoomChannel)
 
   # Socket params are passed from the client and can
   # be used to verify and authenticate a user. After
@@ -22,8 +23,16 @@ defmodule ReactChatWeb.UserSocket do
   # See `Phoenix.Token` documentation for examples in
   # performing token verification on connect.
   @impl true
-  def connect(_params, socket, _connect_info) do
-    {:ok, socket}
+  def connect(%{"token" => token}, socket, _connect_info) do
+    case ReactChatWeb.Token.verify_and_validate(token) do
+      {:ok, claim_map} ->
+        Logger.info("claim_map = #{inspect(claim_map)}")
+        {:ok, socket}
+
+      _ ->
+        Logger.info("verify error")
+        {:error, "Invalid token"}
+    end
   end
 
   # Socket id's are topics that allow you to identify all sockets for a given user:

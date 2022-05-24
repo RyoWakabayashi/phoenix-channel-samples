@@ -17,6 +17,11 @@ config :react_chat, ReactChatWeb.Endpoint,
 
 config :react_chat, ReactChatWeb.RoomChannel, table_name: System.get_env("MESSAGES_NAME")
 
+config :react_chat, ReactChatWeb.Token,
+  domain: System.get_env("AUTH0_DOMAIN"),
+  client_id: System.get_env("AUTH0_CLIENT_ID"),
+  client_secret: System.get_env("AUTH0_CLIENT_SECRET")
+
 # Configures the mailer
 #
 # By default it uses the "Local" adapter which stores the emails

@@ -49,6 +49,9 @@ defmodule ReactChat.MixProject do
       {:telemetry_poller, "~> 1.0"},
       {:gettext, "~> 0.18"},
       {:jason, "~> 1.2"},
+      {:joken, "~> 2.4.1"},
+      {:joken_jwks, "~> 1.6"},
+      {:jose, "~> 1.11"},
       {:plug_cowboy, "~> 2.5"},
       {:sweet_xml, "~> 0.7.3"},
       {:libcluster, "~> 3.3"}

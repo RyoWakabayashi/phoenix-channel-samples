@@ -6,15 +6,16 @@ import Divider from 'material-ui/Divider';
 import TextField from 'material-ui/TextField';
 
 class Chat extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
-      isJoined: false,  //joinしているかどうか。画面を切り替える。
-      inputUser: "",    //ユーザ名の入力
-      inputMessage: "", //メッセージの入力
-      messages: [],     //受け取ったメッセージの配列
-      presences: {}     //presence(参加ユーザ)の状態
+      idToken: props.idToken,
+      inputUser: props.userName,
+      inputMessage: "",
+      messages: [],
+      presences: {}
     }
+    this.join()
   }
 
   handleInputUser(event) {
@@ -29,56 +30,59 @@ class Chat extends React.Component {
     })
   }
 
+  join() {
+    // assets/js/socket.jsのデフォルトの定義と同じ
+    this.socket = new Socket("/socket", {params:
+      {token: this.state.idToken}
+    });
+    this.socket.connect();
+
+    console.log("connected");
+
+    this.channel = this.socket.channel("room:lobby",  {user_name: this.state.inputUser});
+
+    // Presences：現在のサーバの状態を初期状態として設定
+    this.channel.on('presence_state', state => {
+      let presences = this.state.presences;
+      presences = Presence.syncState(presences, state);
+      this.setState({ presences: presences })
+      console.log('state', presences);
+    });
+
+    // Presences：初期状態からの差分を更新していく
+    this.channel.on('presence_diff', diff => {
+      let presences = this.state.presences;
+      presences = Presence.syncDiff(presences, diff);
+      this.setState({ presences: presences })
+      console.log('diff', presences);
+    });
+
+    // 接続時にこれまでのメッセージを受け取る処理
+    this.channel.on("at_first", payload => {
+      this.setState({ messages: payload["msg_list"].reverse() })
+    })
+
+    // メッセージを受け取る処理
+    this.channel.on("new_msg", payload => {
+      let messages = this.state.messages;
+      messages.push(payload)
+      if (messages.length > 10) {
+        messages.shift()
+      }
+      this.setState({ messages: messages })
+    })
+
+    // channelにjoinする
+    this.channel.join()
+      .receive("ok", response => { console.log("Joined successfully", response) })
+      .receive('error', resp => { console.log('Unable to join', resp); });
+  }
+
   // join処理
   handleJoin(event) {
     event.preventDefault();
     if(this.state.inputUser!="") {
-
-        // assets/js/socket.jsのデフォルトの定義と同じ
-        this.socket = new Socket("/socket", {params:
-          {token: window.userToken}
-        });
-        this.socket.connect();
-
-        this.channel = this.socket.channel("room:lobby",  {user_name: this.state.inputUser});
-
-        // Presences：現在のサーバの状態を初期状態として設定
-        this.channel.on('presence_state', state => {
-          let presences = this.state.presences;
-          presences = Presence.syncState(presences, state);
-          this.setState({ presences: presences })
-          console.log('state', presences);
-        });
-
-        // Presences：初期状態からの差分を更新していく
-        this.channel.on('presence_diff', diff => {
-          let presences = this.state.presences;
-          presences = Presence.syncDiff(presences, diff);
-          this.setState({ presences: presences })
-          console.log('diff', presences);
-        });
-
-        // 接続時にこれまでのメッセージを受け取る処理
-        this.channel.on("at_first", payload => {
-          this.setState({ messages: payload["msg_list"].reverse() })
-        })
-
-        // メッセージを受け取る処理
-        this.channel.on("new_msg", payload => {
-          let messages = this.state.messages;
-          messages.push(payload)
-          if (messages.length > 10) {
-            messages.shift()
-          }
-          this.setState({ messages: messages })
-        })
-
-        // channelにjoinする
-        this.channel.join()
-          .receive("ok", response => { console.log("Joined successfully", response) })
-          .receive('error', resp => { console.log('Unable to join', resp); });
-
-        this.setState({ isJoined: true })
+      join()
     }
   }
 
@@ -86,7 +90,6 @@ class Chat extends React.Component {
   handleLeave(event) {
     event.preventDefault();
     this.socket.disconnect();
-    this.setState({ isJoined: false })
   }
 
   // メッセージ送信の処理
@@ -111,41 +114,25 @@ class Chat extends React.Component {
 
     let presences = Presence.list(this.state.presences);
 
-    let form_jsx;
-    if(this.state.isJoined===false) {
-       form_jsx = (
-        <form onSubmit={this.handleJoin.bind(this)} >
-          <label>ユーザ名を指定してJoin</label>&nbsp;&nbsp;&nbsp;&nbsp;
-          <TextField hintText="ユーザ名" value = {this.state.inputUser} onChange = {this.handleInputUser.bind(this)} />&nbsp;&nbsp;&nbsp;&nbsp;
-          <RaisedButton type="submit" primary={true} label="Join" />
-        </form>
-       );
-    } else {
-       form_jsx = (
-         <div>
-           <Paper  style={style1}>
-             <label>参加者数 : {presences.length}</label>
-             <div align="right">
-               <form onSubmit={this.handleLeave.bind(this)} >
-                 <RaisedButton type="submit" primary={true} label="Leave" />
-               </form>
-             </div>
-           </Paper>
-           <Paper  style={style1}>
-             <form onSubmit={this.handleSubmit.bind(this)}>
-               <label>チャット</label>&nbsp;&nbsp;&nbsp;&nbsp;
-               <TextField hintText="Chat Text" value = {this.state.inputMessage} onChange = {this.handleInputMessage.bind(this)} />&nbsp;&nbsp;&nbsp;&nbsp;
-               <RaisedButton type="submit" primary={true} label="Submit" />
-             </form>
-             <Divider />
-             <br />
-             <div>
-               {messages}
-             </div>
-           </Paper>
-         </div>
-      );
-    }
+    let form_jsx = (
+      <div>
+        <Paper  style={style1}>
+          <label>参加者数 : {presences.length}</label>
+        </Paper>
+        <Paper  style={style1}>
+          <form onSubmit={this.handleSubmit.bind(this)}>
+            <label>チャット</label>&nbsp;&nbsp;&nbsp;&nbsp;
+            <TextField hintText="Chat Text" value = {this.state.inputMessage} onChange = {this.handleInputMessage.bind(this)} />&nbsp;&nbsp;&nbsp;&nbsp;
+            <RaisedButton type="submit" primary={true} label="Submit" />
+          </form>
+          <Divider />
+          <br />
+          <div>
+            {messages}
+          </div>
+        </Paper>
+      </div>
+    );
 
     return (
       <div>

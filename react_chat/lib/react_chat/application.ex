@@ -19,6 +19,7 @@ defmodule ReactChat.Application do
       ReactChatWeb.Endpoint,
       # Start a worker by calling: ReactChat.Worker.start_link(arg)
       # {ReactChat.Worker, arg}
+      ReactChatWeb.Auth0JwksStrategy,
       {Cluster.Supervisor, [topologies, [name: ReactChat.ClusterSupervisor]]}
     ]
 

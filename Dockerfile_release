@@ -40,5 +40,4 @@ USER nobody:nobody
 
 COPY --from=build --chown=nobody:nobody /app/_build/${MIX_ENV}/rel/react_chat ./
 
-
 CMD ["bin/react_chat", "start"]

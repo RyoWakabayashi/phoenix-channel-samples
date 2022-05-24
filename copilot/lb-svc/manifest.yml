@@ -28,15 +28,18 @@ image:
 cpu: 256       # Number of CPU units for the task.
 memory: 512    # Amount of memory in MiB used by the task.
 count:
-  spot: 2
+  spot: 1
 exec: true     # Enable running commands in your container.
 
 # Optional fields for more advanced use-cases.
 #
 #variables:                    # Pass environment variables as key value pairs.
 #  LOG_LEVEL: info
+
 variables:
   SECRET_KEY_BASE: ${SECRET_KEY_BASE}
+  AUTH0_DOMAIN: ${AUTH0_DOMAIN}
+  AUTH0_CLIENT_ID: ${AUTH0_CLIENT_ID}
 
 #secrets:                      # Pass secrets from AWS Systems Manager (SSM) Parameter Store.
 #  GITHUB_TOKEN: GITHUB_TOKEN  # The key is the name of the environment variable, the value is the name of the SSM parameter.
