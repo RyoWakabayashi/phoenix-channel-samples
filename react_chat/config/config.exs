@@ -15,6 +15,8 @@ config :react_chat, ReactChatWeb.Endpoint,
   pubsub_server: ReactChat.PubSub,
   live_view: [signing_salt: "FPqpSi1+"]
 
+config :react_chat, ReactChatWeb.RoomChannel, table_name: System.get_env("MESSAGES_NAME")
+
 # Configures the mailer
 #
 # By default it uses the "Local" adapter which stores the emails
@@ -36,6 +38,17 @@ config :esbuild,
     cd: Path.expand("../assets", __DIR__),
     env: %{"NODE_PATH" => Path.expand("../deps", __DIR__)}
   ]
+
+config :ex_aws,
+  access_key_id: [
+    {:system, "AWS_ACCESS_KEY_ID"},
+    :instance_role
+  ],
+  secret_access_key: [
+    {:system, "AWS_SECRET_ACCESS_KEY"},
+    :instance_role
+  ],
+  region: System.get_env("AWS_REGION")
 
 # Configures Elixir's Logger
 config :logger, :console,

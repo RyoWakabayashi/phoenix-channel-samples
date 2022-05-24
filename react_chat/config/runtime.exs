@@ -65,4 +65,9 @@ if config_env() == :prod do
   #     config :swoosh, :api_client, Swoosh.ApiClient.Hackney
   #
   # See https://hexdocs.pm/swoosh/Swoosh.html#module-installation for details.
+
+  config :ex_aws,
+    region: System.get_env("AWS_REGION")
+
+  config :react_chat, ReactChatWeb.RoomChannel, table_name: System.get_env("MESSAGES_NAME")
 end

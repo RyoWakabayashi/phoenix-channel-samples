@@ -33,6 +33,8 @@ defmodule ReactChat.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
+      {:configparser_ex, "~> 4.0"},
+      {:hackney, "~> 1.18.1"},
       {:phoenix, "~> 1.6.7"},
       {:phoenix_html, "~> 3.0"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
@@ -40,12 +42,15 @@ defmodule ReactChat.MixProject do
       {:floki, ">= 0.30.0", only: :test},
       {:phoenix_live_dashboard, "~> 0.6"},
       {:esbuild, "~> 0.4", runtime: Mix.env() == :dev},
+      {:ex_aws, "~> 2.3.2"},
+      {:ex_aws_dynamo, "~> 4.1.0"},
       {:swoosh, "~> 1.3"},
       {:telemetry_metrics, "~> 0.6"},
       {:telemetry_poller, "~> 1.0"},
       {:gettext, "~> 0.18"},
       {:jason, "~> 1.2"},
       {:plug_cowboy, "~> 2.5"},
+      {:sweet_xml, "~> 0.7.3"},
       {:libcluster, "~> 3.3"}
     ]
   end

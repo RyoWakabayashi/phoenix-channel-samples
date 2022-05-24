@@ -8,3 +8,6 @@ services:
     command: mix phx.server
     environment:
       - MIX_ENV=dev
+      - AWS_ACCESS_KEY_ID
+      - AWS_SECRET_ACCESS_KEY
+      - AWS_REGION

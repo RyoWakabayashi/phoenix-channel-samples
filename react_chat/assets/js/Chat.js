@@ -58,6 +58,11 @@ class Chat extends React.Component {
           console.log('diff', presences);
         });
 
+        // 接続時にこれまでのメッセージを受け取る処理
+        this.channel.on("at_first", payload => {
+          this.setState({ messages: payload["msg_list"].reverse() })
+        })
+
         // メッセージを受け取る処理
         this.channel.on("new_msg", payload => {
           let messages = this.state.messages;
